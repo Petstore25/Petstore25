@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasse - Petstore25</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #004d00;
+        }
+
+        .cart-items {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Vertikale Ausrichtung */
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item span {
+            flex: 1; /* Verteile den Platz gleichmäßig */
+            text-align: left;
+        }
+
+        .item .remove-btn {
+            color: red;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        .item .remove-btn:hover {
+            text-decoration: underline;
+        }
+
+        .total {
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .actions a,
+        .actions button {
+            background-color: #004d00;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .actions a:hover,
+        .actions button:hover {
+            background-color: #026d02;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ihr Warenkorb</h1>
+    <div class="cart-items" id="cart-items">
+        <!-- Warenkorb-Artikel erscheinen hier -->
+    </div>
+
+    <div class="actions">
+        <a href="index.html">← Zurück zur Startseite</a>
+        <button onclick="clearCart()">Warenkorb leeren</button>
+    </div>
+
+    <script>
+        const cartContainer = document.getElementById("cart-items");
+
+        function getCartItems() {
+            return JSON.parse(localStorage.getItem("cart")) || [];
+        }
+
+        function renderCart() {
+            const cartItems = getCartItems();
+            cartContainer.innerHTML = "";
+
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = "<p>Ihr Warenkorb ist leer.</p>";
+                document.querySelector(".actions button").style.display = "none";
+                return;
+            }
+
+            let total = 0;
+
+            cartItems.forEach((item, index) => {
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "item";
+                itemDiv.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>€${item.price.toFixed(2)}</span>
+                    <span class="remove-btn" onclick="removeItem(${index})">Entfernen</span>
+                `;
+                cartContainer.appendChild(itemDiv);
+                total += item.price;
+            });
+
+            const totalDiv = document.createElement("div");
+            totalDiv.className = "total";
+            totalDiv.textContent = `Gesamt: €${total.toFixed(2)}`;
+            cartContainer.appendChild(totalDiv);
+        }
+
+        function removeItem(index) {
+            const cartItems = getCartItems();
+            cartItems.splice(index, 1); // Entferne das Element an der angegebenen Indexposition
+            localStorage.setItem("cart", JSON.stringify(cartItems));
+            renderCart(); // Warenkorb neu rendern
+        }
+
+        function clearCart() {
+            if (confirm("Möchten Sie den Warenkorb wirklich leeren?")) {
+                localStorage.removeItem("cart");
+                renderCart(); // Warenkorb nach dem Leeren neu rendern
+            }
+        }
+
+        renderCart(); // Initiales Rendern des Warenkorbs
+    </script>
+</body>
+</html>

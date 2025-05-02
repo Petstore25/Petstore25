@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anmelden - Petstore25</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #f1f1f1;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        main {
+            padding: 60px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            color: #004d00;
+            margin-bottom: 30px;
+        }
+
+        .login-form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 100%;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 14px;
+            background-color: #004d00;
+            color: white;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-form button:hover {
+            background-color: #45a049;
+        }
+
+        .login-form input:focus {
+            border-color: #004d00;
+        }
+
+        .login-form .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: -10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="site-header"></div> <!-- Der Header wird hier geladen -->
+
+    <main>
+        <h2>Bitte melde dich an</h2>
+        <div class="login-form">
+            <form id="login-form" action="#" method="post">
+                <div>
+                    <label for="email">E-Mail</label>
+                    <input type="email" id="email" placeholder="E-Mail" required>
+                    <div id="email-error" class="error"></div>
+                </div>
+                <div>
+                    <label for="password">Passwort</label>
+                    <input type="password" id="password" placeholder="Passwort" required>
+                    <div id="password-error" class="error"></div>
+                </div>
+                <button type="submit">Anmelden</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Header dynamisch laden
+        fetch("header.html")
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("site-header").innerHTML = data;
+            });
+
+        // Formularvalidierung
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let isValid = true;
+
+            // Email Validierung
+            const email = document.getElementById("email");
+            const emailError = document.getElementById("email-error");
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!email.value.match(emailRegex)) {
+                emailError.textContent = "Bitte gib eine gültige E-Mail-Adresse ein.";
+                isValid = false;
+            } else {
+                emailError.textContent = "";
+            }
+
+            // Passwort Validierung
+            const password = document.getElementById("password");
+            const passwordError = document.getElementById("password-error");
+            if (password.value.length < 6) {
+                passwordError.textContent = "Das Passwort muss mindestens 6 Zeichen lang sein.";
+                isValid = false;
+            } else {
+                passwordError.textContent = "";
+            }
+
+            if (isValid) {
+                // Benutzerdaten im localStorage speichern (Hier als Beispiel)
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userName", email.value.split('@')[0]); // Benutzername ist der Teil vor dem "@"
+
+                // Weiterleitung zur Startseite oder einer anderen Seite
+                alert("Erfolgreich angemeldet!");
+                window.location.href = "index.html"; // Hier kannst du zur gewünschten Seite weiterleiten
+            }
+        });
+    </script>
+</body>
+</html>
